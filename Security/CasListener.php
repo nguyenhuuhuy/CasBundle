@@ -29,6 +29,10 @@ class CasListener implements ListenerInterface {
 
         \phpCAS::client(CAS_VERSION_2_0, $this->getParameter('host'), $this->getParameter('port'), is_null($this->getParameter('path')) ? '' : $this->getParameter('path'), true);
 
+        \phpCAS::setPostAuthenticateCallback(function($ticket) use ($event){
+            $event->getRequest()->getSession()->set('ticket', $ticket);
+        });
+
         if(is_bool($this->getParameter('ca')) && $this->getParameter('ca') == false) {
             \phpCAS::setNoCasServerValidation();
         } else {
